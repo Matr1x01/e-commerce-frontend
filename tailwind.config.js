@@ -46,7 +46,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        theme: modernAndMinimalist
+        theme: warmAndInviting
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
