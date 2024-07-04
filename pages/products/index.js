@@ -20,11 +20,14 @@ const Products =  ({productData}) => {
             }
         )
       }
+      <div>
+        make a pagination here
+      </div>
     </div>
   </div>
 }
 export const getServerSideProps = async ({query}) =>{
-  const perPage = query.per_page || 10;
+  const perPage = query.per_page || 5;
     const page = query.page || 1;
   const response = await apiClient({
     url:'products',

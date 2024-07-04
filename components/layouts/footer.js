@@ -1,7 +1,7 @@
 const Footer = () => {
     return (
-        <footer className="text-center p-5 mt-5 bg-gray-800 text-white">
-            <p>© 2023 Your Company Name. All rights reserved.</p>
+        <footer className="text-center p-5 bg-theme-footerBg text-theme-textOnDark">
+            <p>© 2024 Your Company Name. All rights reserved.</p>
         </footer>
     );
 };
