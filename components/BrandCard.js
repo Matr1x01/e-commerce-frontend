@@ -6,11 +6,11 @@ const BandCard = ({ name, image, slug }) => {
     let imageSrc = image ? image : blankImage;
     return (
         <Link href={`/brands/${slug}`}>
-            <div className="border-0 p-4 rounded-lg w-[340px] h-[280px] bg-theme-cardBg textOnLight">
+            <div className="border-0 p-4 rounded-lg w-[340px] h-[280px] bg-theme-cardBg text-theme-textOnLight">
                 <div className='w-full h-[200px] overflow-hidden rounded-lg'>
                     <Image src={imageSrc} alt={name} width={500} height={500} style={{ objectFit: 'cover' }}/>
                 </div>
-                <h3 className="text-2xl w-full text-center font-bold my-2 text-white">{name}</h3>
+                <h3 className="text-2xl w-full text-center font-bold my-2">{name}</h3>
             </div>
         </Link>
     );

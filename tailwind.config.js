@@ -9,8 +9,8 @@ const lightAndAiry = {
   darkBg: '#87A8C9',
   lightBg: '#FFFFFF',
   footerBg: '#778BA5',
-  textOnLight: '#212529',
-  textOnDark: '#FFFFFF',
+  textOnLight: '#303031',
+  textOnDark: '#ededed',
   textDanger: '#ef4444',
 };
 const warmAndInviting = {
@@ -46,7 +46,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        theme: warmAndInviting
+        theme: lightAndAiry
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",

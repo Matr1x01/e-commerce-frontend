@@ -18,8 +18,8 @@ export default function BrandPage({ brandData }) {
     return (
         <div className="p-8">
             <div className='w-full flex flex-col text-center my-4'>
-                <h1 className="text-4xl font-bold mb-4 text-gray-50">{brand.name}</h1>
-                <p className="text-lg font-light text-gray-300">{brand.description}</p>
+                <h1 className="text-4xl font-bold mb-4 text-theme-textOnLight">{brand.name}</h1>
+                <p className="text-lg font-light text-gray-600">{brand.description}</p>
             </div>
             <div className='flex flex-row flex-wrap justify-start mt-8'>
                 {products.map((product, i) => (

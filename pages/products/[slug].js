@@ -3,13 +3,36 @@ import {apiClient} from "@/services/api-client";
 import Image from 'next/image';
 import blankImage from '@/public/images/blank_product.jpg';
 import Link from 'next/link';
+import {toast} from "react-toastify";
+import React from "react";
 
 export default function ProductDetail({product}) {
     const router = useRouter();
     const {slug} = router.query;
 
+    const [quantity, setQuantity] = React.useState(1);
+
     if (!product) {
         return <div>Product not found</div>;
+    }
+
+    const handleAddCart = async (slug,quantity) => {
+        try{
+            let res = await apiClient({
+                method: "POST",
+                url: "cart/",
+                data: {
+                    product: slug,
+                    quantity: quantity
+                }
+            })
+            if (res.status === 200) {
+                toast.success("Successful!");
+            }
+        }catch (e) {
+            toast.error("Failed to add to cart")
+            console.log(e)
+        }
     }
 
     return (
@@ -27,15 +50,16 @@ export default function ProductDetail({product}) {
                 <h1 className="text-4xl font-bold">{product.name}</h1>
                 <div className='flex flex-row w-full justify-start my-4'>
                     <Link href={`/brands/${product.brand?.slug}`}>
-                        <span>Brand:<span className="text-blue-100  cursor-pointer mx-2">{product.brand?.name}</span></span>
+                        <span>Brand:<span
+                            className="text-gray-900  cursor-pointer mx-2">{product.brand?.name}</span></span>
                     </Link>
                     <span className='mx-auto'>
                         Categories:
-                            {product.category.map((cat, index) => (
-                                <Link key={index} href={`/categories/${cat.slug}`}>
-                                    <span className="text-blue-100  mx-2 cursor-pointer">{cat.name}</span>|
-                                </Link>
-                            ))}
+                        {product.category.map((cat, index) => (
+                            <Link key={index} href={`/categories/${cat.slug}`}>
+                                <span className="text-gray-900  mx-2 cursor-pointer">{cat.name}</span>|
+                            </Link>
+                        ))}
                     </span>
                 </div>
                 <p>{product.description}</p>
@@ -49,8 +73,29 @@ export default function ProductDetail({product}) {
                         <span>${product.selling_price}</span>
                     )}
                 </div>
+                <div className="flex items-center mx-8 my-4">
+                   <span className='mr-4'>Quantity:</span>
+                    <button
+                        onClick={() => setQuantity(quantity - 1)}
+                        className="bg-blue-500 text-white p-2 rounded hover:bg-blue-700 transition duration-300 w-[40px]"
+                    >
+                        -
+                    </button>
+                    <span className="mx-4">{quantity}</span>
+                    <button
+                        onClick={() => setQuantity(quantity + 1)}
+                        className="bg-blue-500 text-white p-2 rounded hover:bg-blue-700 transition duration-300 w-[40px]"
+                    >
+                        +
+                    </button>
+                </div>
+                <div>
+                    <button className='text-xl px-4 py-2 text-theme-textOnDark bg-blue-500 rounded-2xl'
+                            onClick={() => handleAddCart(product.slug, quantity)}>
+                        Add to Cart
+                    </button>
+                </div>
             </div>
-
         </div>
     );
 }

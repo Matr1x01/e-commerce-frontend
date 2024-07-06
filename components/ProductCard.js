@@ -25,14 +25,14 @@ const ProductCard = ({name, price, has_discount, discount_price, image, slug}) =
     let image_src = image ? image: blankImage;
     return (
 
-        <div className="border-0 p-4 rounded-lg w-[340px] h-[350px] bg-theme-cardBg textOnLight">
+        <div className="border-0 p-4 rounded-lg w-[340px] h-[380px] bg-theme-cardBg textOnLight">
             <Link href={`/products/${slug}`}>
             <div className='w-full h-[200px] overflow-hidden rounded-lg'>
                 <Image src={image_src} alt={name} width={500} height={500} style={{
                     objectFit: 'cover',
                 }}/>
             </div>
-            <h3 className="text-lg font-bold my-2">{name}</h3>
+            <h3 className="pt-2 text-lg font-bold my-2 h-[65px] overflow-hidden">{name}</h3>
             <div>
                 {
                     has_discount ? (

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { apiClient } from "@/services/api-client";
 import CartProductCard from "@/components/CartProductCard";
+import {toast} from "react-toastify";
+import {router} from "next/client";
 
 const CartPage = () => {
     const [cart, setCart] = useState({
@@ -14,6 +16,8 @@ const CartPage = () => {
         total: 0,
         address: "",
     });
+
+    const [coupon, setCoupon] = useState('');
 
     useEffect(() => {
         const fetchCartData = async () => {
@@ -62,8 +66,28 @@ const CartPage = () => {
             console.error("Failed to delete item:", error);
         }
     }
+
+    const handleApplyCoupon = async () => {
+        try {
+            const response = await apiClient({
+                url: `apply-coupon/`,
+                method: "POST",
+                data: {
+                    code: coupon
+                }
+            });
+            if (response.status === 200){
+                toast.success("Coupon applied successfully!")
+                setCart(response.data.data.cart);
+            }
+
+        } catch (error) {
+            toast.error("Failed to apply coupon");
+            console.error("Failed to apply coupon:", error);
+        }
+    }
     return (
-        <div className="max-w-4xl mx-auto p-4 bg-theme-mainBg text-theme-textOnDark">
+        <div className="max-w-4xl mx-auto p-4 bg-theme-mainBg text-theme-textOnLight">
             <h2 className="text-3xl font-bold mb-6">Your Cart</h2>
             <div className="grid grid-cols-2 gap-4 mb-4">
                 <div>Subtotal: <span className="font-semibold">${cart.subtotal_price}</span></div>
@@ -74,12 +98,17 @@ const CartPage = () => {
                 <div>Total: <span className="font-semibold">${cart.total}</span></div>
             </div>
             <div>Shipping Address: <span className="font-semibold">{cart.address}</span></div>
+            <div className='flex flex-row'>
+                <input type='text' placeholder="Enter your coupon code" className='p-3 m-2 w-full rounded-2xl' value={coupon} onChange={(e)=>setCoupon(e.target.value)}/>
+                <button className='bg-theme-darkBg text-theme-textOnDark px-5 p-y m-2 rounded-2xl' onClick={handleApplyCoupon}>Apply</button>
+            </div>
             {cart.items?.length > 0 ? (
                 <div className="mt-8">
                     <h3 className="text-2xl font-bold mb-4">Items:</h3>
                     <div className='space-y-4 m-8'>
                         {cart.items.map((item, index) => (
-                            <CartProductCard key={index} product={item} onDelete={handleDelete} onQuantityChange={handleQuantityChange} />
+                            <CartProductCard key={index} product={item} onDelete={handleDelete}
+                                             onQuantityChange={handleQuantityChange}/>
                         ))}
                     </div>
                 </div>
@@ -89,6 +118,12 @@ const CartPage = () => {
                     <p>Looks like you haven't made your choice yet.</p>
                 </div>
             )}
+            <div>
+                <button
+                    className="bg-theme-darkBg text-theme-textOnDark px-4 py-2 rounded-lg mt-4 w-full text-2xl" onClick={()=>router.push('/checkout')}>Proceed
+                    to Checkout
+                </button>
+            </div>
         </div>
     );
 };

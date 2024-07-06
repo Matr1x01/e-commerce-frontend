@@ -11,7 +11,7 @@ const Header = () => {
         setToken(authToken);
     }, []);
     return (
-        <header className="bg-theme-headerBg text-theme-textOnDark p-5">
+        <header className="bg-theme-headerBg text-theme-textOnLight p-5">
             <nav className="flex justify-between items-center">
                 <div className="flex gap-4">
                     <Link href="/">

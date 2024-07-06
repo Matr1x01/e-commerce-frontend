@@ -1,12 +1,12 @@
 import React from 'react';
 import Image from 'next/image';
 
-const CartProductCard = ({ product, onDelete, onQuantityChange }) => {
+const CartProductCard = ({product, onDelete, onQuantityChange}) => {
 
 
     return (
         <div
-            className="flex items-center justify-between my-4 bg-theme-cardBg text-theme-textOnDark shadow rounded-lg p-4">
+            className="flex items-center justify-between my-4 bg-theme-cardBg text-theme-textOnLight shadow rounded-lg p-4">
             <div className="flex items-center">
                 {product.product_images.length > 0 ? (
                     <Image src={product.product_images[0]} alt={product.product_name} width={100} height={100}
@@ -22,27 +22,31 @@ const CartProductCard = ({ product, onDelete, onQuantityChange }) => {
                     <p>Total Price: ${product.total_price}</p>
                 </div>
             </div>
-            <div className="flex items-center mx-8">
+            {onQuantityChange ? (
+                <div className="flex items-center mx-8">
+                    <button
+                        onClick={() => onQuantityChange(product.product_slug, -1)}
+                        className="bg-blue-500 text-white p-2 rounded hover:bg-blue-700 transition duration-300 w-[40px]"
+                    >
+                        -
+                    </button>
+                    <span className="mx-4">{product.quantity_in_cart}</span>
+                    <button
+                        onClick={() => onQuantityChange(product.product_slug, 1)}
+                        className="bg-blue-500 text-white p-2 rounded hover:bg-blue-700 transition duration-300 w-[40px]"
+                    >
+                        +
+                    </button>
+                </div>) : (<></>)}
+            {onDelete? (
                 <button
-                    onClick={() => onQuantityChange(product.product_slug, -1)}
-                    className="bg-blue-500 text-white p-2 rounded hover:bg-blue-700 transition duration-300 w-[40px]"
+                    onClick={() => onDelete(product.product_slug)}
+                    className="bg-red-500 text-white p-2 rounded hover:bg-red-700 transition duration-300"
                 >
-                    -
+                    Delete
                 </button>
-                <span className="mx-4">{product.quantity_in_cart}</span>
-                <button
-                    onClick={() => onQuantityChange(product.product_slug, 1)}
-                    className="bg-blue-500 text-white p-2 rounded hover:bg-blue-700 transition duration-300 w-[40px]"
-                >
-                    +
-                </button>
-            </div>
-            <button
-                onClick={() => onDelete(product.product_slug)}
-                className="bg-red-500 text-white p-2 rounded hover:bg-red-700 transition duration-300"
-            >
-                Delete
-            </button>
+            ) : (<></>)}
+
         </div>
     );
 };

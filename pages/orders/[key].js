@@ -5,7 +5,7 @@ const OrderDetails = ({ order }) => {
     console.log(order)
     return (
         order!==null?
-        <div className="bg-theme-cardBg text-theme-textOnDark p-6 mb-4 border border-gray-200 rounded-lg">
+        <div className="bg-theme-cardBg text-theme-textOnLight p-6 mb-4 border border-gray-200 rounded-lg">
             <h2 className="text-xl font-semibold">Order ID: {order?.key}</h2>
             <div className="grid grid-cols-2 gap-4">
                 <span>Total: ${order.total}</span>
