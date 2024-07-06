@@ -37,8 +37,10 @@ const CartProductCard = ({product, onDelete, onQuantityChange}) => {
                     >
                         +
                     </button>
-                </div>) : (<></>)}
-            {onDelete? (
+                </div>) : (<div>
+                <p className='font-bold mx-4'>Quantity: {product.quantity_in_cart}</p>
+            </div>)}
+            {onDelete ? (
                 <button
                     onClick={() => onDelete(product.product_slug)}
                     className="bg-red-500 text-white p-2 rounded hover:bg-red-700 transition duration-300"
