@@ -107,6 +107,7 @@ const ProfilePage = () => {
                         <input
                             className={input_classes}
                             name="phone"
+                            disabled
                             value={editData.phone}
                             onChange={handleInputChange}
                         />
