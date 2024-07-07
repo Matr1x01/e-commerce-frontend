@@ -3,12 +3,20 @@ import Link from 'next/link';
 import {apiClient} from "@/services/api-client";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { setCookie } from 'cookies-next';
+import {getCookie, setCookie} from 'cookies-next';
 import { useRouter } from 'next/router';
 const LoginPage = () => {
+    const router = useRouter();
+
+    if (process.browser) {
+        const authToken = getCookie('authToken');
+        if (authToken) {
+            router.push('/');
+        }
+    }
     const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
-    const router = useRouter();
+
     const handlePhoneChange = (e) => setPhone(e.target.value);
     const handlePasswordChange = (e) => setPassword(e.target.value);
 

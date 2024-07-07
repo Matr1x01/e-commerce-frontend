@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { apiClient } from "@/services/api-client";
+import React, {useEffect, useState} from 'react';
 import {toast} from "react-toastify";
 import AddressCard from "@/components/AddressCard";
+import {createAddressRequest, deleteAddressRequest, getAddressesRequest} from "@/api/addressRequests";
+import {getProfileRequest, updateProfileRequest} from "@/api/profileRequests";
 
 const ProfilePage = () => {
     const [userData, setUserData] = useState({
@@ -31,7 +32,7 @@ const ProfilePage = () => {
     });
 
     const handleAddressChange = (e) => {
-        const { name, value } = e.target;
+        const {name, value} = e.target;
         setNewAddress((prevAddress) => ({
             ...prevAddress,
             [name]: value,
@@ -39,79 +40,58 @@ const ProfilePage = () => {
     };
 
     const handleAddressDelete = async (addressUuid) => {
-        try {
-            const response = await apiClient({
-                url: `addresses/${addressUuid}/`,
-                method: "DELETE",
-            });
-            if (response.status === 200) {
-                setAddresses(addresses.filter((address) => address.uuid !== addressUuid));
-                toast.success("Address deleted successfully");
-            } else {
-                toast.error("Failed to delete address");
-                console.error("Failed to delete address:", response);
-            }
-        } catch (error) {
-            console.error("Failed to delete address:", error);
-            toast.error("Failed to delete address");
+        const response = await deleteAddressRequest({addressUuid});
+        if (response.error) {
+            toast.error("Failed to delete address:" + response.message);
+        } else {
+            setAddresses(addresses.filter((address) => address.uuid !== addressUuid));
+            toast.success("Address deleted successfully");
         }
     }
 
     const handleAddressSubmit = async (e) => {
         e.preventDefault();
-        try {
-            const response = await apiClient({
-                url: 'addresses/',
-                method: "POST",
-                data: newAddress,
+        const response = await createAddressRequest({
+            address: newAddress.address,
+            area: newAddress.area,
+            city: newAddress.city,
+            state: newAddress.state,
+            country: newAddress.country,
+            postalCode: newAddress.postal_code
+        })
+        if (response.error) {
+            toast.error("Failed to add address: " + response.data.message);
+        } else {
+            setAddresses([...addresses, response.data.data]);
+            setNewAddress({
+                address: "",
+                area: "",
+                city: "",
+                state: "",
+                country: "",
+                postal_code: "",
             });
-            if (response.status === 201) {
-                setAddresses([...addresses, response.data.data]);
-                toast.success("Address added successfully");
-                setNewAddress({
-                    address: "",
-                    area: "",
-                    city: "",
-                    state: "",
-                    country: "",
-                    postal_code: "",
-                });
-            } else {
-                toast.error("Failed to add address");
-                console.error("Failed to add address:", response);
-            }
-        } catch (error) {
-            console.error("Failed to add address:", error);
-            toast.error("Failed to add address");
+            setEditMode(false);
+            toast.success("Address added successfully");
         }
     };
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
-                const response = await apiClient({
-                    url: 'profile',
-                    method: "GET",
-                });
-                if (response.status !== 200) {
-                    console.error("Failed to fetch profile data:", response);
-                    return;
-                }
-                setUserData(response.data.data);
-                setEditData(response.data.data); // Initialize editData with fetched data
+            const profileResponse = await getProfileRequest();
 
-                const addressResponse = await apiClient({
-                    url: 'addresses',
-                    method: "GET",
-                });
-                if (addressResponse.status !== 200) {
-                    console.error("Failed to fetch address data:", addressResponse);
-                    return;
-                }
+            if (profileResponse.error) {
+                toast.error("Failed to fetch profile data");
+            } else {
+                setUserData(profileResponse.data.data);
+                setEditData(profileResponse.data.data);
+            }
+
+            const addressResponse = await getAddressesRequest();
+            if (addressResponse.error) {
+                toast.error("Failed to fetch addresses");
+            } else {
                 setAddresses(addressResponse.data.data);
-
-            } catch (error) {
-                console.error("Failed to fetch profile data:", error);
             }
         };
         fetchData();
@@ -122,7 +102,7 @@ const ProfilePage = () => {
     };
 
     const handleInputChange = (e) => {
-        const { name, value } = e.target;
+        const {name, value} = e.target;
         setEditData((prevData) => ({
             ...prevData,
             [name]: value,
@@ -131,29 +111,25 @@ const ProfilePage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            let response = await apiClient({
-                url: 'profile/update',
-                method: "PUT",
-                data: {
-                    name: editData.name,
-                    phone: editData.phone,
-                    date_of_birth: editData.date_of_birth,
-                    gender: editData.gender
-                }
-            });
-            setUserData(response.data.data);
+        const response = await updateProfileRequest({
+                name: editData.name,
+                date_of_birth: editData.date_of_birth,
+                gender: editData.gender
+            }
+        );
+        if (response.error) {
+            toast.error("Failed to update profile: " + response.message);
+        } else {
+            setUserData(editData);
             setEditMode(false);
-            toast.success("Profile updated successfully")
-        }catch (error) {
-            console.error("Failed to update profile data:", error);
+            toast.success("Profile updated successfully");
         }
     };
     const userDetailKeys = [
-        {key:"name", name:"Name"},
-        {key:"phone", name:"Phone"},
-        {key:"date_of_birth", name:"Date of Birth"},
-        {key:"gender", name: "Gender"}
+        {key: "name", name: "Name"},
+        {key: "phone", name: "Phone"},
+        {key: "date_of_birth", name: "Date of Birth"},
+        {key: "gender", name: "Gender"}
     ];
     const input_classes = "p-2 my-2 w-full rounded-md px-2 focus:outline-none focus:ring focus:ring-blue-500 focus:ring-opacity-50  text-gray-800 placeholder-gray-500";
     return (
@@ -204,7 +180,8 @@ const ProfilePage = () => {
                         </div>
                     </form>
                 ) : (
-                    <div className="user-details w-full bg-theme-cardBg shadow rounded-lg p-4 divide-y divide-gray-400 text-theme-textOnLight">
+                    <div
+                        className="user-details w-full bg-theme-cardBg shadow rounded-lg p-4 divide-y divide-gray-400 text-theme-textOnLight">
                         {userDetailKeys.map((items, i) => (
                             <div key={i} className="flex items-center py-2">
                                 <span className="text-theme-textOnlight font-bold mr-2 w-[200px]">{items.name}:</span>

@@ -10,6 +10,10 @@ export const apiClient = axios.create({
     },
 });
 
+
+export const addTokenToHeader = (token) => {
+    apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+}
 apiClient.interceptors.request.use(
     function (config) {
         const token = getCookie("authToken");

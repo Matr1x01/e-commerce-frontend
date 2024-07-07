@@ -1,4 +1,3 @@
-// components/Pagination.js
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
     const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 

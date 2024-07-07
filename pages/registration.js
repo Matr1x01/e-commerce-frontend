@@ -3,15 +3,23 @@ import { toast } from 'react-toastify';
 import { apiClient } from "@/services/api-client";
 import { useRouter } from 'next/router';
 import Link from "next/link";
+import {getCookie, setCookie} from "cookies-next";
 
 const RegistrationPage = () => {
+    const router = useRouter();
+
+    if (process.browser) {
+        const authToken = getCookie('authToken');
+        if (authToken) {
+            router.push('/');
+        }
+    }
     const [formData, setFormData] = useState({
         name: '',
         phone: '',
         password: '',
         confirmPassword: ''
     });
-    const router = useRouter();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -35,16 +43,18 @@ const RegistrationPage = () => {
                     name: formData.name,
                     phone: formData.phone,
                     password: formData.password,
+                    confirm_password: formData.confirmPassword,
                 }
             });
-            if (response.status === 200) {
+            if (response.status === 201) {
                 toast.success("Registration successful!");
-                setCookie('authToken', response.data.token, {
+                setCookie('authToken', response.data.data.token, {
                     expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7), // 7 days
                     maxAge: 60 * 60 * 24 * 7
                 });
-                router.push('/login');
+                await router.push('/');
             } else {
+                console.error(error);
                 toast.error("Registration failed.");
             }
         } catch (error) {

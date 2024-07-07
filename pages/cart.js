@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { apiClient } from "@/services/api-client";
 import CartProductCard from "@/components/CartProductCard";
 import {toast} from "react-toastify";
 import {useRouter} from "next/router";
+import {deleteCartProductRequest, getCartRequest, postCartRequest} from "@/api/cartRequests";
+import {applyCouponRequest} from "@/api/couponRequest";
 
 const CartPage = () => {
     const router = useRouter();
@@ -21,71 +22,46 @@ const CartPage = () => {
     const [coupon, setCoupon] = useState('');
 
     useEffect(() => {
-        const fetchCartData = async () => {
-            try {
-                const response = await apiClient({
-                    url: 'cart',
-                    method: "GET",
-                });
-                setCart(response.data.data);
-            } catch (error) {
-                console.error("Failed to fetch cart data:", error);
+        const fetchData = async () => {
+            const response = await getCartRequest()
+            if (response.error){
+                toast.error("Failed to fetch cart data");
+                return;
             }
-        };
-
-        fetchCartData();
+            setCart(response.data.data)
+        }
+        fetchData();
     }, []);
 
     // onDelete, onQuantityChange
     const handleQuantityChange = async (productSlug, quantityChange) => {
-        try {
-            const response = await apiClient({
-                url: `cart/`,
-                method: "POST",
-                data: {
-                    product: productSlug,
-                    quantity: quantityChange
-                }
-            });
-            setCart(response.data.data);
-        } catch (error) {
-            console.error("Failed to update quantity:", error);
+        const response = await postCartRequest({productSlug: productSlug, quantity: quantityChange});
+        if (response.error){
+            toast.error("Failed to update product quantity in cart:"+response.data.message);
+            return;
         }
+        toast.success("Product quantity updated in cart")
+        setCart(response.data.data);
     }
 
     const handleDelete = async (productSlug) => {
-        try {
-            const response = await apiClient({
-                url: `cart`,
-                method: "DELETE",
-                data: {
-                    product: productSlug
-                }
-            });
-            setCart(response.data.data);
-        } catch (error) {
-            console.error("Failed to delete item:", error);
+        const response = await deleteCartProductRequest({productSlug: productSlug});
+        if (response.error){
+            toast.error("Failed to delete product from cart:"+response.data.message);
+            return;
         }
+        toast.success("Product deleted from cart")
+        setCart(response.data.data);
     }
 
     const handleApplyCoupon = async () => {
-        try {
-            const response = await apiClient({
-                url: `apply-coupon/`,
-                method: "POST",
-                data: {
-                    code: coupon
-                }
-            });
-            if (response.status === 200){
-                toast.success("Coupon applied successfully!")
-                setCart(response.data.data.cart);
-            }
-
-        } catch (error) {
-            toast.error("Failed to apply coupon");
-            console.error("Failed to apply coupon:", error);
+        const response = await applyCouponRequest({couponCode: coupon});
+        if (response.error){
+            toast.error("Failed to apply coupon:"+response.data.message);
+            return;
         }
+        toast.success("Coupon applied")
+        setCart(response.data.data.cart);
     }
     return (
         <div className="max-w-4xl mx-auto p-4 bg-theme-mainBg text-theme-textOnLight">

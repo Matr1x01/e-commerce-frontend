@@ -1,25 +1,16 @@
 import Image from 'next/image';
 import blankImage from '@/public/images/blank_product.jpg';
 import Link from "next/link";
-import {apiClient} from "@/services/api-client";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {postCartRequest} from "@/api/cartRequests";
 const handleAddCart = async (slug) => {
-    try{
-        let res = await apiClient({
-            method: "POST",
-            url: "cart/",
-            data: {
-                product: slug,
-                quantity: 1
-            }
-        })
-        if (res.status === 200) {
-            toast.success("Successful!");
-        }
-    }catch (e) {
-        console.log(e)
+    const response = await postCartRequest({productSlug: slug, quantity: 1});
+    if (!response.error) {
+        toast.success('Product added to cart successfully');
+        return;
     }
+    toast.error('Failed to add product to cart:'+response.data.message);
 }
 const ProductCard = ({name, price, has_discount, discount_price, image, slug}) => {
     let image_src = image ? image: blankImage;

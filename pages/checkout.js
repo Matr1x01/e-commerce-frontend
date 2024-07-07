@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
-import { apiClient } from "@/services/api-client";
+import React, {useEffect, useState} from 'react';
 import CartProductCard from "@/components/CartProductCard";
 import {toast} from "react-toastify";
 import {useRouter} from "next/router";
+import {getCartRequest} from "@/api/cartRequests";
+import {getAddressesRequest} from "@/api/addressRequests";
+import {postOrderRequest} from "@/api/orderRequests";
 
 const CheckOut = () => {
     const router = useRouter();
@@ -18,10 +19,10 @@ const CheckOut = () => {
         address: "",
     });
 
-    const paymentMethods = [{key:'cash_on_delivery',name:'Cash on Delivery'}];
+    const paymentMethods = [{key: 'cash_on_delivery', name: 'Cash on Delivery'}];
     const [paymentMethod, setPaymentMethod] = useState(0);
 
-    const deliveryMethods = [{key:'home_delivery',name:'Home Delivery'}];
+    const deliveryMethods = [{key: 'home_delivery', name: 'Home Delivery'}];
     const [deliveryMethod, setDeliveryMethod] = useState(0);
 
     const [addresses, setAddresses] = useState([]);
@@ -29,29 +30,23 @@ const CheckOut = () => {
 
     useEffect(() => {
         const fetchCartData = async () => {
-            try {
-                const response = await apiClient({
-                    url: 'cart',
-                    method: "GET",
-                });
-                console.log(response.data.data);
-                if (response.status !== 200 || response?.data?.data?.items.length === 0) {
-                    console.error("Failed to fetch cart data:", response);
-                    await router.replace('/cart');
-                }
-                setCart(response.data.data);
+            const cartResponse = await getCartRequest()
 
-                const addressResponse = await apiClient({
-                    url: 'addresses',
-                    method: "GET",
-                });
-                if (addressResponse.status !== 200) {
-                    console.error("Failed to fetch address data:", addressResponse);
-                }
-                setAddresses(addressResponse.data.data);
-            } catch (error) {
-                console.error("Failed to fetch cart data:", error);
+            if (cartResponse.error) {
+                console.error("Failed to fetch cart data:", cartResponse.data.message);
+                return;
             }
+            setCart(cartResponse.data.data);
+
+            const addressesResponse = await getAddressesRequest()
+
+            if (addressesResponse.error) {
+                console.error("Failed to fetch addresses:", addressesResponse.data.message);
+                return;
+            }
+
+            setAddresses(addressesResponse.data.data);
+
         };
 
         fetchCartData();
@@ -62,27 +57,29 @@ const CheckOut = () => {
         if (!selectedAddress) {
             toast.error("Please select an address to place order");
         }
-        const orderData= {
-            payment_method: paymentMethods[paymentMethod].key,
-            delivery_method: deliveryMethods[deliveryMethod].key,
-            address: selectedAddress,
+        const response = await postOrderRequest({
+            deliveryMethod: deliveryMethods[deliveryMethod].key,
+            selectedAddress,
+            paymentMethod: paymentMethods[paymentMethod].key
+        })
+
+        if (response.error) {
+            toast.error("Failed to place order, please try again, Error: " + response.data.message);
+            return;
         }
-        console.log(orderData);
-        try {
-            const response = await apiClient({
-                url: 'orders/',
-                method: "POST",
-                data: orderData
-            });
-            if (response.status !== 200) {
-                console.error("Failed to place order:", response);
-            }
-            toast.success("Order placed successfully");
-            await router.push('/orders');
-        } catch (error) {
-            console.error("Failed to place order:", error);
-            toast.error("Failed to place order");
-        }
+        toast.success("Order placed successfully");
+    }
+
+    if (!cart.items || cart.items.length === 0) {
+        return (
+            <div className="max-w-4xl mx-auto p-4 bg-theme-mainBg text-theme-textOnLight">
+                <h2 className="text-3xl font-bold mb-6">Order Details</h2>
+                <div className="text-center py-8 rounded-lg border border-theme-lightBg">
+                    <p className="text-lg font-semibold">Your cart is empty.</p>
+                    <p>Looks like you haven't made your choice yet.</p>
+                </div>
+            </div>
+        );
     }
 
     return (

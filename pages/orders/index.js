@@ -1,23 +1,22 @@
 import OrderCard from "@/components/OrderCard";
 import {apiClient} from "@/services/api-client";
 import {useEffect, useState} from "react";
+import {getOrdersRequest} from "@/api/orderRequests";
 
 const OrdersPage = () => {
     const [orders, setOrders] = useState([]);
 
     useEffect(() => {
         const fetchOrders = async () => {
-            try {
-                const response = await apiClient({
-                    url: 'orders',
-                    method: "GET",
-                });
-                setOrders(response.data.data);
-            } catch (error) {
-                console.error("Failed to fetch orders:", error);
-            }
-        };
+            const response = await getOrdersRequest();
 
+            if (response.error) {
+                console.error(response.error);
+                return;
+            }
+
+            setOrders(response.data.data);
+        };
         fetchOrders();
     }, []);
     return (

@@ -1,8 +1,8 @@
 import { getCookie } from 'cookies-next';
-import {apiClient} from "@/services/api-client";
+import {addTokenToHeader, apiClient} from "@/services/api-client";
+import {getOrderRequest} from "@/api/orderRequests";
 
 const OrderDetails = ({ order }) => {
-    console.log(order)
     return (
         order!==null?
         <div className="bg-theme-cardBg text-theme-textOnLight p-6 mb-4 border border-gray-200 rounded-lg">
@@ -33,29 +33,21 @@ export default OrderDetails;
 export async function getServerSideProps({ params, req, res }) {
     const { key } = params;
     const token = getCookie("authToken", { req, res});
-    try{
-        const response = await apiClient({
-            url: `orders/${key}`,
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-
+    addTokenToHeader(token);
+    const response = await getOrderRequest({ orderUuid: key});
+    if (response.error){
+        console.log(response.data);
         return {
             props: {
-                order: response.data.data,
+                order: null
             }
-        };
-
+        }
     }
-    catch (error) {
-        console.error("Failed to fetch order details:", error);
-        return {
-            props: {
-                order: null,
-            }
-        };
+
+    return {
+        props: {
+            order: response.data
+        }
     }
 
 }
