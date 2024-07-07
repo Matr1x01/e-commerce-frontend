@@ -3,9 +3,10 @@ import Image from 'next/image';
 import { apiClient } from "@/services/api-client";
 import CartProductCard from "@/components/CartProductCard";
 import {toast} from "react-toastify";
-import {router} from "next/client";
+import {useRouter} from "next/router";
 
 const CartPage = () => {
+    const router = useRouter();
     const [cart, setCart] = useState({
         items: [],
         subtotal_price: 0,

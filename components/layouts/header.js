@@ -9,7 +9,7 @@ const Header = () => {
         // Get the token from cookies on the client-side
         const authToken = getCookie('authToken');
         setToken(authToken);
-    }, []);
+    });
     return (
         <header className="bg-theme-headerBg text-theme-textOnLight p-5">
             <nav className="flex justify-between items-center">
@@ -33,18 +33,18 @@ const Header = () => {
                             <Link href="/logout">
                                 <span className="hover:text-gray-300">Logout</span>
                             </Link>
+                            <Link href="/cart">
+                                <span className="hover:text-gray-300">Cart</span>
+                            </Link>
+                            <Link href="/orders">
+                                <span className="hover:text-gray-300">Orders</span>
+                            </Link>
                         </>
                     ) : (
                         <Link href="/login">
                             <span className="hover:text-gray-300">Login</span>
                         </Link>
                     )}
-                    <Link href="/cart">
-                        <span className="hover:text-gray-300">Cart</span>
-                    </Link>
-                    <Link href="/orders">
-                        <span className="hover:text-gray-300">Orders</span>
-                    </Link>
                 </div>
             </nav>
         </header>

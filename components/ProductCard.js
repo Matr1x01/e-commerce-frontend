@@ -25,7 +25,7 @@ const ProductCard = ({name, price, has_discount, discount_price, image, slug}) =
     let image_src = image ? image: blankImage;
     return (
 
-        <div className="border-0 p-4 rounded-lg w-[340px] h-[380px] bg-theme-cardBg textOnLight">
+        <div className="border-0 p-4 rounded-lg w-[340px] h-[380px] bg-theme-cardBg text-theme-textOnLight">
             <Link href={`/products/${slug}`}>
             <div className='w-full h-[200px] overflow-hidden rounded-lg'>
                 <Image src={image_src} alt={name} width={500} height={500} style={{
