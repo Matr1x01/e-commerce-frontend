@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import { apiClient } from "@/services/api-client";
 import { useRouter } from 'next/router';
+import Link from "next/link";
 
 const RegistrationPage = () => {
     const [formData, setFormData] = useState({
@@ -57,64 +58,71 @@ const RegistrationPage = () => {
             <div className="p-8 mt-36 mb-8 bg-theme-cardBg shadow-md rounded-md w-[400px]">
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <label htmlFor="name" className="block text-sm font-medium text-theme-textOnDark">Name</label>
+                        <label htmlFor="name" className="block text-sm font-medium text-theme-textOnLight">Name</label>
                         <input
                             type="text"
                             id="name"
                             name="name"
                             value={formData.name}
                             onChange={handleChange}
-                            className="mt-1 block w-full px-3 py-2 bg-theme-lightBg border border-gray-300 rounded-md shadow-sm focus:text-theme-textOnLight focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            className="mt-1 block w-full px-3 py-2 bg-theme-lightBg border border-gray-300 rounded-md shadow-sm text-theme-textOnLight focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                             placeholder="Enter your name"
                             required
                         />
                     </div>
                     <div>
-                        <label htmlFor="phone" className="block text-sm font-medium text-theme-textOnDark">Phone Number</label>
+                        <label htmlFor="phone" className="block text-sm font-medium text-theme-textOnLight">Phone Number</label>
                         <input
                             type="text"
                             id="phone"
                             name="phone"
                             value={formData.phone}
                             onChange={handleChange}
-                            className="mt-1 block w-full px-3 py-2 bg-theme-lightBg border border-gray-300 rounded-md shadow-sm focus:text-theme-textOnLight focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            className="mt-1 block w-full px-3 py-2 bg-theme-lightBg border border-gray-300 rounded-md shadow-sm text-theme-textOnLight focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                             placeholder="Enter your phone number"
                             required
                         />
                     </div>
                     <div>
-                        <label htmlFor="password" className="block text-sm font-medium text-theme-textOnDark">Password</label>
+                        <label htmlFor="password" className="block text-sm font-medium text-theme-textOnLight">Password</label>
                         <input
                             type="password"
                             id="password"
                             name="password"
                             value={formData.password}
                             onChange={handleChange}
-                            className="mt-1 block w-full px-3 py-2 bg-theme-lightBg border border-gray-300 rounded-md shadow-sm focus:text-theme-textOnLight focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            className="mt-1 block w-full px-3 py-2 bg-theme-lightBg border border-gray-300 rounded-md shadow-sm text-theme-textOnLight focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                             placeholder="Enter your password"
                             required
                         />
                     </div>
                     <div>
-                        <label htmlFor="confirmPassword" className="block text-sm font-medium text-theme-textOnDark">Confirm Password</label>
+                        <label htmlFor="confirmPassword" className="block text-sm font-medium text-theme-textOnLight">Confirm Password</label>
                         <input
                             type="password"
                             id="confirmPassword"
                             name="confirmPassword"
                             value={formData.confirmPassword}
                             onChange={handleChange}
-                            className="mt-1 block w-full px-3 py-2 bg-theme-lightBg border border-gray-300 rounded-md shadow-sm focus:text-theme-textOnLight focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            className="mt-1 block w-full px-3 py-2 bg-theme-lightBg border border-gray-300 rounded-md shadow-sm text-theme-textOnLight focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                             placeholder="Confirm your password"
                             required
                         />
                     </div>
                     <button
                         type="submit"
-                        className="w-full py-2 text-white bg-theme-buttonBg rounded-md hover:bg-theme-buttonBgHover focus:outline-none focus:ring focus:ring-indigo-500 focus:ring-opacity-50"
-
+                        className="w-full py-2 text-white bg-theme-darkBg rounded-md hover:bg-theme-buttonBgHover focus:outline-none focus:ring focus:ring-indigo-500 focus:ring-opacity-50"
                     >
                         Register
                     </button>
+                    <div className="text-center mt-4 text-theme-textOnLight">
+                        <span>
+                            Already have an account?
+                            <Link href='/login'>
+                                <span className='text-blue-400'> Login </span>
+                            </Link>
+                        </span>
+                    </div>
                 </form>
             </div>
         </div>

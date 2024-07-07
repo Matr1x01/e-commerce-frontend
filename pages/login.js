@@ -81,6 +81,14 @@ const LoginPage = () => {
                         >
                             Sign in
                         </button>
+                        <div className="text-center mt-4 text-theme-textOnLight">
+                            <span>
+                                Do not have an account?
+                                <span className='text-blue-400' >
+                                    <Link href='/registration'> register</Link>
+                                </span>
+                            </span>
+                        </div>
                     </div>
                 </form>
             </div>
