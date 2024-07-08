@@ -25,3 +25,10 @@ export const getOrderRequest = async ({orderUuid}) => {
         method: "GET",
     });
 }
+
+export const cancelOrderRequest = async ({key}) => {
+    return await requestWrapper({
+        url: `order-cancel/${key}/`,
+        method: "POST",
+    });
+}

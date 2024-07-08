@@ -24,7 +24,7 @@ export const createAddressRequest = async ({address, area, city, state, country,
     });
 
 }
-export const deleteAddressRequest = async (addressUuid) => {
+export const deleteAddressRequest = async ({addressUuid}) => {
     return await requestWrapper({
         method: 'DELETE',
         url: `addresses/${addressUuid}/`,

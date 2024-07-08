@@ -42,6 +42,7 @@ const ProfilePage = () => {
     const handleAddressDelete = async (addressUuid) => {
         const response = await deleteAddressRequest({addressUuid});
         if (response.error) {
+            console.log(response);
             toast.error("Failed to delete address:" + response.message);
         } else {
             setAddresses(addresses.filter((address) => address.uuid !== addressUuid));
