@@ -57,10 +57,10 @@ export default function ProductDetail({product}) {
             <div className="mt-4 w-1/2 flex justify-center">
                 {product.images.length > 0 ? (
                     product.images.map((image, index) => (
-                        <Image key={index} src={image} alt={product.name} width={500} height={500}/>
+                        <Image unoptimized key={index} src={image} alt={product.name} width={500} height={500}/>
                     ))
                 ) : (
-                    <Image src={blankImage} alt="No image available" width={500} height={500} style={{objectFit: "contain"}}/>
+                    <Image unoptimized src={blankImage} alt="No image available" width={500} height={500} style={{objectFit: "contain"}}/>
                 )}
             </div>
             <div className='w-1/2'>
@@ -102,14 +102,14 @@ export default function ProductDetail({product}) {
                 <div className="flex items-center mx-8 my-4">
                     <span className='mr-4'>Quantity:</span>
                     <button
-                        onClick={() => setQuantity(quantity - 1)}
+                        onClick={() => setQuantity(Math.max(quantity - 1,0))}
                         className="bg-blue-500 text-white p-2 rounded hover:bg-blue-700 transition duration-300 w-[40px]"
                     >
                         -
                     </button>
                     <span className="mx-4">{quantity}</span>
                     <button
-                        onClick={() => setQuantity(quantity + 1)}
+                        onClick={() => setQuantity(Math.min(quantity + 1,100))}
                         className="bg-blue-500 text-white p-2 rounded hover:bg-blue-700 transition duration-300 w-[40px]"
                     >
                         +

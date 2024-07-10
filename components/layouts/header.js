@@ -1,12 +1,14 @@
 import Link from 'next/link';
-import {getCookie} from "cookies-next";
+import {deleteCookie, getCookie} from "cookies-next";
 import {useEffect, useState} from "react";
+import {useRouter} from "next/router";
+import {useWishlist} from "@/services/WishlistProvider";
 
 const Header = () => {
     const [token, setToken] = useState(null);
-
+    const router = useRouter();
+    const {setWishlistItems} = useWishlist();
     useEffect(() => {
-        // Get the token from cookies on the client-side
         const authToken = getCookie('authToken');
         setToken(authToken);
     });
@@ -30,9 +32,11 @@ const Header = () => {
                             <Link href="/profile">
                                 <span className="hover:text-gray-300">Profile</span>
                             </Link>
-                            <Link href="/logout">
-                                <span className="hover:text-gray-300">Logout</span>
-                            </Link>
+                            <span className="hover:text-gray-300 hover:cursor-pointer" onClick={() => {
+                                deleteCookie('authToken');
+                                setWishlistItems([]);
+                                router.push('/');
+                            }}>Logout</span>
                             <Link href="/cart">
                                 <span className="hover:text-gray-300">Cart</span>
                             </Link>

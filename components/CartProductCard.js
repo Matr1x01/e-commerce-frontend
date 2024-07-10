@@ -9,7 +9,7 @@ const CartProductCard = ({product, onDelete, onQuantityChange}) => {
             className="flex items-center justify-between my-4 bg-theme-cardBg text-theme-textOnLight shadow rounded-lg p-4">
             <div className="flex items-center">
                 {product.product_images.length > 0 ? (
-                    <Image src={product.product_images[0]} alt={product.product_name} width={100} height={100}
+                    <Image unoptimized src={product.product_images[0]} alt={product.product_name} width={100} height={100}
                            className="rounded"/>
                 ) : (
                     <div className="w-24 h-24 bg-gray-200 flex items-center justify-center rounded">

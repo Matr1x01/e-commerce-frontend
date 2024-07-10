@@ -19,7 +19,7 @@ const handleAddCart = async (slug) => {
 }
 const ProductCard = ({name, price, has_discount, discount_price, image, slug}) => {
     let image_src = image || blankImage;
-    const { wishlist, addToWishlist, removeFromWishlist } = useWishlist();
+    const {wishlist, addToWishlist, removeFromWishlist} = useWishlist();
     const [isInWishlist, setIsInWishlist] = useState(() => wishlist.includes(slug));
 
     useEffect(() => {
@@ -28,14 +28,14 @@ const ProductCard = ({name, price, has_discount, discount_price, image, slug}) =
 
     const handleWishlistToggle = async () => {
         if (isInWishlist) {
-            const response = await deleteWishlistRequest({ productSlug: slug });
+            const response = await deleteWishlistRequest({productSlug: slug});
             if (!response.error) {
                 removeFromWishlist(slug);
             } else {
                 toast.error('Failed to remove product from wishlist');
             }
         } else {
-            const response = await postWishlistRequest({ productSlug: slug });
+            const response = await postWishlistRequest({productSlug: slug});
             if (!response.error) {
                 addToWishlist(slug);
             } else {
@@ -48,9 +48,10 @@ const ProductCard = ({name, price, has_discount, discount_price, image, slug}) =
         <div className="border-0 p-4 rounded-lg w-[340px] h-[380px] bg-theme-cardBg text-theme-textOnLight">
             <Link href={`/products/${slug}`}>
                 <div className='w-full h-[200px] overflow-hidden rounded-lg'>
-                    <Image src={image_src} alt={name} width={500} height={500} style={{
-                        objectFit: 'cover',
-                    }}/>
+                    <Image src={image_src} alt={name} width={500} height={500} unoptimized
+                           style={{
+                               objectFit: 'cover',
+                           }}/>
                 </div>
                 <h3 className="pt-2 text-lg font-bold my-2 h-[65px] overflow-hidden">{name}</h3>
                 <div>

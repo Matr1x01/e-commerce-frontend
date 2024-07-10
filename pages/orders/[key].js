@@ -10,7 +10,7 @@ import {toast} from "react-toastify";
 const OrderedProduct = ({orderedProduct}) => {
     const imageUrl = orderedProduct.product_image[0] ? orderedProduct.product_image[0] : blankImage;
     return <div className='flex flex-row p-4 m-2 bg-theme-cardBg rounded-xl justify-between items-center'>
-        <Image src={imageUrl} alt={orderedProduct.product_name}
+        <Image unoptimized src={imageUrl} alt={orderedProduct.product_name}
                width={100} height={100}
                className='h-24 w-24 object-cover m-4'/>
         <div className='text-lg font-semibold text-theme-textOnLight m-4'>{orderedProduct.product_name}</div>
