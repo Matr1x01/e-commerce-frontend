@@ -1,11 +1,11 @@
-import { apiClient } from "@/services/api-client";
-import { useRouter } from 'next/router';
+import {useRouter} from 'next/router';
 import ProductCard from "@/components/ProductCard";
 import Pagination from "@/components/Pagination";
+import {getBrand} from "@/api/productRequests";
 
-export default function BrandPage({ brandData }) {
+export default function BrandPage({brandData}) {
     const router = useRouter();
-    const { brand, products, meta } = brandData.data;
+    const {brand, products, meta} = brandData.data;
 
     const handlePageChange = (page) => {
         router.push(`/brands/${brand.slug}?page=${page}`);
@@ -35,24 +35,19 @@ export default function BrandPage({ brandData }) {
                     </div>
                 ))}
             </div>
-            <Pagination currentPage={meta.current_page} totalPages={meta.total_pages} onPageChange={handlePageChange} />
+            <Pagination currentPage={meta.current_page} totalPages={meta.total_pages} onPageChange={handlePageChange}/>
         </div>
     );
 }
 
 
 export async function getServerSideProps({params, query}) {
-    const page = query.page || 1; // Default to page 1 if no page query parameter is provided
-    const response = await apiClient({
-        url: `brands/${params.slug}`,
-        method: "GET",
-        params: {
-            page, // Add the page to the request parameters
-        },
-    });
+    const page = query.page || 1;
+    const perPage = query.per_page || 5;
+    const response = await getBrand({slug: params.slug, query: {page: page, per_page: perPage}});
 
-    if (response.status !== 200) {
-        return { notFound: true };
+    if (response.error) {
+        return {notFound: true};
     }
 
     return {

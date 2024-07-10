@@ -1,11 +1,11 @@
-import { apiClient } from "@/services/api-client";
-import { useRouter } from 'next/router';
+import {useRouter} from 'next/router';
 import ProductCard from "@/components/ProductCard";
-import Pagination from "@/components/Pagination"; // Placeholder image for products without an image
+import Pagination from "@/components/Pagination";
+import {getCategory} from "@/api/productRequests"; // Placeholder image for products without an image
 
-export default function CategoryPage({ categoryData }) {
+export default function CategoryPage({categoryData}) {
     const router = useRouter();
-    const { category, products, meta } = categoryData.data;
+    const {category, products, meta} = categoryData;
 
     const handlePageChange = (page) => {
         router.push(`/categories/${category.slug}?page=${page}`);
@@ -35,28 +35,23 @@ export default function CategoryPage({ categoryData }) {
                     </div>
                 })}
             </div>
-            <Pagination currentPage={meta.current_page} totalPages={meta.total_pages} onPageChange={handlePageChange} />
+            <Pagination currentPage={meta.current_page} totalPages={meta.total_pages} onPageChange={handlePageChange}/>
         </div>
     );
 }
 
 export async function getServerSideProps({params, query}) {
-    const page = query.page || 1; // Default to page 1 if no page query parameter is provided
-    const response = await apiClient({
-        url: `category/${params.slug}`,
-        method: "GET",
-        params: {
-            page, // Add the page to the request parameters
-        },
-    });
+    const page = query.page || 1;
+    const perPage = query.per_page || 10;
+    const response = await getCategory({slug: params.slug, query: {query: {page: page, per_page: perPage}}});
 
-    if (response.status !== 200) {
-        return { notFound: true };
+    if (response.error) {
+        return {notFound: true};
     }
 
     return {
         props: {
-            categoryData: response.data,  // Assuming the API returns total_pages in the meta
+            categoryData: response.data.data,  // Assuming the API returns total_pages in the meta
         },
     };
 }

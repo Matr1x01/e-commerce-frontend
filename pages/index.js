@@ -1,9 +1,9 @@
 'use client'
-import { apiClient } from "@/services/api-client";
 import ProductCard from "@/components/ProductCard";
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import Pagination from '@/components/Pagination';
+import {getProducts} from "@/api/productRequests";
 const Home =  ({productData}) => {
     const router = useRouter();
     let meta = productData.data.meta;
@@ -38,15 +38,8 @@ const Home =  ({productData}) => {
 export const getServerSideProps = async ({query}) =>{
     const perPage = query.per_page || 5;
     const page = query.page || 1;
-    const response = await apiClient({
-        url:'products',
-        method: "GET",
-        params: {
-            page: page,
-            per_page: perPage
-        }
-    })
-    if (response.status !== 200){
+    const response = await getProducts({ page: page,  per_page: perPage})
+    if (response.error){
         return {
             props: {
                 productData: { }

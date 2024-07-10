@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
-import {apiClient} from "@/services/api-client";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {getCookie, setCookie} from 'cookies-next';
 import { useRouter } from 'next/router';
+import {useWishlist} from "@/services/WishlistProvider";
+import {getWishlistRequest} from "@/api/wishlistRequests";
+import {loginRequest} from "@/api/authRequests";
 const LoginPage = () => {
     const router = useRouter();
-
+    const {wishlist, setWishlistItems} = useWishlist();
     if (process.browser) {
         const authToken = getCookie('authToken');
         if (authToken) {
@@ -22,25 +24,17 @@ const LoginPage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            let res = await apiClient({
-                url: 'login',
-                method: 'POST',
-                data: {
-                    phone: phone,
-                    password: password
-                }
-            });
-            setCookie('authToken', res.data.data.token, {
-                expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7), // 7 days
-                maxAge: 60 * 60 * 24 * 7
-            });
-            toast.success("Login successful!");
-            await router.push('/');
-        } catch (error) {
-            console.log(error);
-            toast.error("An error occurred during login.");
+        const res = await loginRequest({phone, password});
+        setCookie('authToken', res.data.data.token, {
+            expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7), // 7 days
+            maxAge: 60 * 60 * 24 * 7
+        });
+        const wishlistResponse = await getWishlistRequest();
+        if (!wishlistResponse.error) {
+            setWishlistItems(wishlistResponse.data.data.items.map(item => item.product_slug));
         }
+        toast.success("Login successful!");
+        await router.push('/');
     };
 
     return (

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
-import { apiClient } from "@/services/api-client";
 import { useRouter } from 'next/router';
 import Link from "next/link";
 import {getCookie, setCookie} from "cookies-next";
+import {registerRequest} from "@/api/authRequests";
 
 const RegistrationPage = () => {
     const router = useRouter();
@@ -35,32 +35,13 @@ const RegistrationPage = () => {
             toast.error("Passwords do not match.");
             return;
         }
-        try {
-            const response = await apiClient({
-                url: 'register',
-                method: 'POST',
-                data: {
-                    name: formData.name,
-                    phone: formData.phone,
-                    password: formData.password,
-                    confirm_password: formData.confirmPassword,
-                }
-            });
-            if (response.status === 201) {
-                toast.success("Registration successful!");
-                setCookie('authToken', response.data.data.token, {
-                    expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7), // 7 days
-                    maxAge: 60 * 60 * 24 * 7
-                });
-                await router.push('/');
-            } else {
-                console.error(error);
-                toast.error("Registration failed.");
-            }
-        } catch (error) {
-            console.error(error);
-            toast.error("An error occurred during registration.");
-        }
+
+        const response = await registerRequest({name:formData.name,phone:formData.phone,password:formData.password,confirm_password:formData.confirmPassword});
+        setCookie('authToken', response.data.data.token, {
+            expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7), // 7 days
+            maxAge: 60 * 60 * 24 * 7
+        });
+        await router.push('/');
     };
 
     return (

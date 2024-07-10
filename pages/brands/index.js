@@ -1,9 +1,9 @@
 'use client'
-import { apiClient } from "@/services/api-client";
 import BandCard from "@/components/BrandCard"; // Assuming you have a BandCard component
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import Pagination from '@/components/Pagination';
+import {getBrands} from "@/api/productRequests";
 
 const Bands = ({ bandsData }) => {
     const router = useRouter();
@@ -37,16 +37,9 @@ const Bands = ({ bandsData }) => {
 export const getServerSideProps = async ({ query }) => {
     const perPage = query.per_page || 5;
     const page = query.page || 1;
-    const response = await apiClient({
-        url: 'brands', // Adjust the endpoint to where your bands data is located
-        method: "GET",
-        params: {
-            page: page,
-            per_page: perPage
-        }
-    });
+    const response = await getBrands({page: page, per_page: perPage});
 
-    if (response.status !== 200) {
+    if (response.error) {
         return {
             props: {
                 bandsData: {}

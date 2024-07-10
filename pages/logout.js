@@ -1,12 +1,14 @@
 import React from 'react';
 import { deleteCookie } from 'cookies-next';
 import { useRouter } from 'next/router';
+import {useWishlist} from "@/services/WishlistProvider";
 
 const LogoutPage = () => {
     const router = useRouter();
-
+    const { setWishlistItems } = useWishlist();
     const handleLogout = () => {
         deleteCookie('authToken');
+        setWishlistItems([]);
         router.push('/');
     };
 

@@ -36,6 +36,9 @@ const Header = () => {
                             <Link href="/cart">
                                 <span className="hover:text-gray-300">Cart</span>
                             </Link>
+                            <Link href="/wishlist">
+                                <span className="hover:text-gray-300">Wishlist</span>
+                            </Link>
                             <Link href="/orders">
                                 <span className="hover:text-gray-300">Orders</span>
                             </Link>

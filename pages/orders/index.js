@@ -1,5 +1,4 @@
 import OrderCard from "@/components/OrderCard";
-import {apiClient} from "@/services/api-client";
 import {useEffect, useState} from "react";
 import {getOrdersRequest} from "@/api/orderRequests";
 

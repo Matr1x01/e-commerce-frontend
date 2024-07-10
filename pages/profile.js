@@ -134,7 +134,7 @@ const ProfilePage = () => {
     ];
     const input_classes = "p-2 my-2 w-full rounded-md px-2 focus:outline-none focus:ring focus:ring-blue-500 focus:ring-opacity-50  text-gray-800 placeholder-gray-500";
     return (
-        <div className='flex flex-row w-full m-4'>
+        <div className='flex flex-row w-full'>
             <div className="profile-page flex flex-col items-center w-1/2 p-6">
                 <h1 className="text-3xl font-bold text-center mb-4 text-theme-textOnLight">Profile Details</h1>
                 {editMode ? (
