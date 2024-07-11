@@ -4,23 +4,14 @@ import {useEffect, useState} from 'react';
 import {useRouter} from 'next/router';
 import Pagination from '@/components/Pagination';
 import {getProducts} from "@/api/productRequests";
+import {sortOptions} from "@/utils/sort_options";
+import {perPageOptions} from "@/utils/per_page_options";
 
 const Home = ({productData}) => {
     const router = useRouter();
     let meta = productData.data.meta;
     const [currentPage, setCurrentPage] = useState(parseInt(meta?.current_page) || 1);
     const totalPages = parseInt(meta?.total_pages) || 1;
-    const sortOptions = [
-        {value: 'all', label: 'All'},
-        {value: 'low_to_high', label: 'Low to High'},
-        {value: 'high_to_low', label: 'High to Low'},
-    ]
-    const perPageOptions = [
-        {value: 5, label: 5},
-        {value: 10, label: 10},
-        {value: 15, label: 15}
-    ]
-
     const handlePageChange = (page) => {
         setCurrentPage(page);
         router.push(`?page=${page}`);
@@ -36,7 +27,7 @@ const Home = ({productData}) => {
         router.push(`?page=1&sort_by=${selectedSort}&per_page=${newPerPageValue}`);
     };
 
-    const [selectedSort, setSelectedSort] = useState('all');
+    const [selectedSort, setSelectedSort] = useState('');
     const [selectedPerPage, setSelectedPerPage] = useState(5);
 
     useEffect(() => {
@@ -87,8 +78,8 @@ const Home = ({productData}) => {
     </div>
 }
 export const getServerSideProps = async ({query}) => {
-    const {page = 1, per_page = 5, sort_by = 'all'} = query;
-    const response = await getProducts({page: page, per_page: per_page})
+    const {page = 1, per_page = 5, sort_by = ""} = query;
+    const response = await getProducts({page: page, per_page: per_page, sort_by: sort_by})
     if (response.error) {
         return {
             props: {

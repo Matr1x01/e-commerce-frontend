@@ -1,15 +1,39 @@
 import {useRouter} from 'next/router';
 import ProductCard from "@/components/ProductCard";
 import Pagination from "@/components/Pagination";
-import {getCategory} from "@/api/productRequests"; // Placeholder image for products without an image
+import {getCategory} from "@/api/productRequests";
+import {useEffect, useState} from "react";
+import {sortOptions} from "@/utils/sort_options";
+import {perPageOptions} from "@/utils/per_page_options"; // Placeholder image for products without an image
 
 export default function CategoryPage({categoryData}) {
     const router = useRouter();
     const {category, products, meta} = categoryData;
-
+    const [currentPage, setCurrentPage] = useState(parseInt(meta?.current_page) || 1);
+    const totalPages = parseInt(meta?.total_pages) || 1;
     const handlePageChange = (page) => {
-        router.push(`/categories/${category.slug}?page=${page}`);
+        setCurrentPage(page);
+        router.push(`/categories/${router.query.slug}?page=${page}`);
     };
+
+    const handleSortChange = (e) => {
+        const newSortValue = e.target.value;
+        router.push(`/categories/${router.query.slug}?page=${currentPage}&sort_by=${newSortValue}&per_page=${selectedPerPage}`);
+    };
+
+    const handlePerPageChange = (e) => {
+        const newPerPageValue = e.target.value;
+        router.push(`/categories/${router.query.slug}?page=1&sort_by=${selectedSort}&per_page=${newPerPageValue}`);
+    };
+
+    const [selectedSort, setSelectedSort] = useState('');
+    const [selectedPerPage, setSelectedPerPage] = useState(5);
+
+    useEffect(() => {
+        const {sort_by, per_page} = router.query;
+        if (sort_by) setSelectedSort(sort_by);
+        if (per_page) setSelectedPerPage(parseInt(per_page));
+    }, [router.query]);
 
     if (router.isFallback) {
         return <div>Loading...</div>;
@@ -20,6 +44,25 @@ export default function CategoryPage({categoryData}) {
             <div className='w-full flex flex-col text-center my-4'>
                 <h1 className="text-4xl font-bold mb-4 text-theme-textOnLight">{category.name}</h1>
                 <p className="text-lg font-light text-gray-600">{category.description}</p>
+            </div>
+            <div className='p-2 flex flex-row w-full rounded-2xl text-theme-textOnLight'>
+                <label className='p-2'>Sort By:</label>
+                <select className='p-2 rounded-lg w-40' name='sort_by' onChange={handleSortChange} value={selectedSort}>
+                    {
+                        sortOptions.map((option, i) => {
+                            return <option key={i} value={option.value}>{option.label}</option>
+                        })
+                    }
+                </select>
+                <label className='p-2'>Show:</label>
+                <select className='p-2 rounded-lg w-20' name='sort_by' onChange={handlePerPageChange}
+                        value={selectedPerPage}>
+                    {
+                        perPageOptions.map((option, i) => {
+                            return <option key={i} value={option.value}>{option.label}</option>
+                        })
+                    }
+                </select>
             </div>
             <div className='flex flex-row flex-wrap justify-start mt-8'>
                 {products.map((product, i) => {
@@ -41,9 +84,11 @@ export default function CategoryPage({categoryData}) {
 }
 
 export async function getServerSideProps({params, query}) {
-    const page = query.page || 1;
-    const perPage = query.per_page || 10;
-    const response = await getCategory({slug: params.slug, query: {query: {page: page, per_page: perPage}}});
+    const {page = 1, per_page = 5, sort_by = ""} = query;
+    const response = await getCategory({
+        slug: params.slug,
+        query: {page: page, per_page: per_page, sort_by: sort_by}
+    });
 
     if (response.error) {
         return {notFound: true};
