@@ -8,6 +8,14 @@ export const getProducts = async (query) => {
     })
 }
 
+export const getSearchResults = async (query) => {
+    return requestWrapper({
+        url: 'products-search/',
+        method: 'GET',
+        params: {query}
+    })
+
+}
 export const getProduct = async (slug) => {
     return requestWrapper({
         url: `products/${slug}`,
