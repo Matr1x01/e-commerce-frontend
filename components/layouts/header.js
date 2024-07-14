@@ -13,10 +13,14 @@ const Header = () => {
     const {setWishlistItems} = useWishlist();
 
     const fetchSearchResults = async (query) => {
+        if (!query || query.length < 2) {
+            setSearchResults([]);
+            return;
+        }
         const response = await getSearchResults(query);
         const results = response.data.data;
-        if (results && results.items?.length > 0) {
-            setSearchResults(results.items.map(item => {
+        if (results && results?.length > 0) {
+            setSearchResults(results.map(item => {
                 return {name: item.name, slug: item.slug}
             }))
         }

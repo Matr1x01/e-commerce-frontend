@@ -68,6 +68,7 @@ const CheckOut = () => {
             return;
         }
         toast.success("Order placed successfully");
+        await router.push('/orders');
     }
 
     if (!cart.items || cart.items.length === 0) {
