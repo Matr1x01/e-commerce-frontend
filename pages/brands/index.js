@@ -23,7 +23,7 @@ const Bands = ({ bandsData }) => {
                     <div className='m-2' key={i}>
                         <BandCard
                             name={band.name}
-                            image={band.image}
+                            image={band.logo}
                             slug={band.slug}
                         />
                     </div>

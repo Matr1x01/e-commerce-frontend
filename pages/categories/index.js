@@ -34,7 +34,7 @@ const Categories = ({ categoriesData }) => {
 };
 
 export const getServerSideProps = async ({ query }) => {
-    const perPage = query.per_page || 5;
+    const perPage = query.per_page || 10;
     const page = query.page || 1;
     const response = await getCategories({query:{page: page, per_page: perPage}});
     if (response.error) {

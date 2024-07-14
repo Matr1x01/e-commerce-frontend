@@ -28,7 +28,7 @@ const Home = ({productData}) => {
     };
 
     const [selectedSort, setSelectedSort] = useState('');
-    const [selectedPerPage, setSelectedPerPage] = useState(5);
+    const [selectedPerPage, setSelectedPerPage] = useState(10);
 
     useEffect(() => {
         const {sort_by, per_page} = router.query;
@@ -78,7 +78,7 @@ const Home = ({productData}) => {
     </div>
 }
 export const getServerSideProps = async ({query}) => {
-    const {page = 1, per_page = 5, sort_by = ""} = query;
+    const {page = 1, per_page = 10, sort_by = ""} = query;
     const response = await getProducts({page: page, per_page: per_page, sort_by: sort_by})
     if (response.error) {
         return {
