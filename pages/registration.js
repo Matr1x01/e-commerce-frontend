@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { toast } from 'react-toastify';
-import { useRouter } from 'next/router';
+import React, {useState} from 'react';
+import {toast} from 'react-toastify';
+import {useRouter} from 'next/router';
 import Link from "next/link";
 import {getCookie, setCookie} from "cookies-next";
 import {registerRequest} from "@/api/authRequests";
@@ -20,9 +20,10 @@ const RegistrationPage = () => {
         password: '',
         confirmPassword: ''
     });
+    const [view, setView] = useState(false);
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
+        const {name, value} = e.target;
         setFormData(prevState => ({
             ...prevState,
             [name]: value
@@ -36,7 +37,12 @@ const RegistrationPage = () => {
             return;
         }
 
-        const response = await registerRequest({name:formData.name,phone:formData.phone,password:formData.password,confirm_password:formData.confirmPassword});
+        const response = await registerRequest({
+            name: formData.name,
+            phone: formData.phone,
+            password: formData.password,
+            confirm_password: formData.confirmPassword
+        });
         setCookie('authToken', response.data.data.token, {
             expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7), // 7 days
             maxAge: 60 * 60 * 24 * 7
@@ -62,7 +68,8 @@ const RegistrationPage = () => {
                         />
                     </div>
                     <div>
-                        <label htmlFor="phone" className="block text-sm font-medium text-theme-textOnLight">Phone Number</label>
+                        <label htmlFor="phone" className="block text-sm font-medium text-theme-textOnLight">Phone
+                            Number</label>
                         <input
                             type="text"
                             id="phone"
@@ -75,30 +82,50 @@ const RegistrationPage = () => {
                         />
                     </div>
                     <div>
-                        <label htmlFor="password" className="block text-sm font-medium text-theme-textOnLight">Password</label>
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            className="mt-1 block w-full px-3 py-2 bg-theme-lightBg border border-gray-300 rounded-md shadow-sm text-theme-textOnLight focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            placeholder="Enter your password"
-                            required
-                        />
+                        <label htmlFor="password"
+                               className="block text-sm font-medium text-theme-textOnLight">Password</label>
+                        <div className="relative">
+                            <input
+                                type={view ? "text" : "password"}
+                                id="password"
+                                name="password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                className="mt-1 block w-full px-3 py-2 bg-theme-lightBg border border-gray-300 rounded-md shadow-sm focus:text-theme-textOnLight focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                placeholder="Enter your password"
+                                required
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setView(!view)}
+                                className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+                            >
+                                {view ? "Hide" : "Show"}
+                            </button>
+                        </div>
                     </div>
                     <div>
-                        <label htmlFor="confirmPassword" className="block text-sm font-medium text-theme-textOnLight">Confirm Password</label>
-                        <input
-                            type="password"
-                            id="confirmPassword"
-                            name="confirmPassword"
-                            value={formData.confirmPassword}
-                            onChange={handleChange}
-                            className="mt-1 block w-full px-3 py-2 bg-theme-lightBg border border-gray-300 rounded-md shadow-sm text-theme-textOnLight focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            placeholder="Confirm your password"
-                            required
-                        />
+                        <label htmlFor="confirmPassword" className="block text-sm font-medium text-theme-textOnLight">Confirm
+                            Password</label>
+                        <div className="relative">
+                            <input
+                                type={view ? "text" : "password"}
+                                id="confirmPassword"
+                                name="confirmPassword"
+                                value={formData.confirmPassword}
+                                onChange={handleChange}
+                                className="mt-1 block w-full px-3 py-2 bg-theme-lightBg border border-gray-300 rounded-md shadow-sm focus:text-theme-textOnLight focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                placeholder="Enter your password"
+                                required
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setView(!view)}
+                                className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+                            >
+                                {view ? "Hide" : "Show"}
+                            </button>
+                        </div>
                     </div>
                     <button
                         type="submit"

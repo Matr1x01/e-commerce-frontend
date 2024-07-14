@@ -1,5 +1,6 @@
 import React, {createContext, useContext, useEffect, useState} from 'react';
 import {getWishlistRequest} from "@/api/wishlistRequests";
+import {deleteCookie} from "cookies-next";
 
 const WishlistContext = createContext();
 
@@ -12,6 +13,10 @@ export const WishlistProvider = ({ children }) => {
         const fetchedWishlist = async () => {
             const response = await getWishlistRequest();
             if (response.error) {
+                if (response.status === 401) {
+                    deleteCookie('authToken');
+                    return;
+                }
                 setWishlist([]);
                 return;
             }

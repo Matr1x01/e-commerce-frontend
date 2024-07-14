@@ -18,6 +18,7 @@ const LoginPage = () => {
     }
     const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
+    const [viewPassword, setViewPassword] = useState(false);
 
     const handlePhoneChange = (e) => setPhone(e.target.value);
     const handlePasswordChange = (e) => setPassword(e.target.value);
@@ -55,17 +56,27 @@ const LoginPage = () => {
                         />
                     </div>
                     <div>
-                        <label htmlFor="password" className="block text-sm font-medium text-theme-textOnDark">Password</label>
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            value={password}
-                            onChange={handlePasswordChange}
-                            className="mt-1 block w-full px-3 py-2 bg-theme-lightBg border border-gray-300 rounded-md shadow-sm focus:text-theme-textOnLight focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            placeholder="Enter your password"
-                            required
-                        />
+                        <label htmlFor="password"
+                               className="block text-sm font-medium text-theme-textOnDark">Password</label>
+                        <div className="relative">
+                            <input
+                                type={view ? "text" : "password"}
+                                id="password"
+                                name="password"
+                                value={password}
+                                onChange={handlePasswordChange}
+                                className="mt-1 block w-full px-3 py-2 bg-theme-lightBg border border-gray-300 rounded-md shadow-sm focus:text-theme-textOnLight focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                placeholder="Enter your password"
+                                required
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setView(!view)}
+                                className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+                            >
+                                {view ? "Hide" : "Show"}
+                            </button>
+                        </div>
                     </div>
                     <div className="flex items-center justify-between">
                         <div className="text-sm">
